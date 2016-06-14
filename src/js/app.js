@@ -6,6 +6,7 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
+var Feature = require('platform/feature');
 var vibe = require('ui/vibe');
 
 
@@ -74,8 +75,16 @@ function showTimer(timer) {
     var wind = new UI.Window({
         backgroundColor: 'black'
     });
+    wind.status({
+        color: 'white',
+        backgroundColor: 'black',
+        separator: "none"
+    });
+
+
+    var width = 140;
     var radial = new UI.Radial({
-        size: new Vector2(140, 140),
+        size: new Vector2(width, width),
         angle: 0,
         angle2: radialStart,
         radius: radialRadius,
@@ -85,7 +94,7 @@ function showTimer(timer) {
     });
 
     var radial2 = new UI.Radial({
-        size: new Vector2(140, 140),
+        size: new Vector2(width, width),
         angle: 0,
         angle2: radialStart,
         radius: radialRadius / 2,
@@ -95,13 +104,13 @@ function showTimer(timer) {
     });
 
     var countdownText = new UI.Text({
-        size: new Vector2(140, 60),
+        size: new Vector2(width, 60),
         font: 'bitham-42-bold',
         text: secondsToRun,
         textAlign: 'center'
     });
     var doneText = new UI.Text({
-        size: new Vector2(140, 60),
+        size: new Vector2(width, 60),
         font: 'bitham-42-bold',
         text: secondsToRun,
         textAlign: 'center'
@@ -109,7 +118,7 @@ function showTimer(timer) {
 
     var selectText = new UI.Text(
         {
-            size: new Vector2(140, 40),
+            size: new Vector2(width, 40),
             font: 'gothic-24-bold',
             text: "Start",
             textAlign: 'right'
@@ -118,33 +127,27 @@ function showTimer(timer) {
 
     var upText = new UI.Text(
         {
-            size: new Vector2(140, 40),
+            size: new Vector2(width, 40),
             font: 'gothic-24-bold',
             text: "Reset",
             textAlign: 'right'
         }
     );
-    var windSize = wind.size();
+    var windSize = Feature.resolution();
 
     // Center the radial in the window
-    radial.position(radial.position()
-        .addSelf(windSize)
-        .subSelf(radial.size())
-        .multiplyScalar(0.5));
 
-    // Center the countdownText in the window
-    countdownText.position(countdownText.position()
-        .addSelf(windSize)
-        .subSelf(countdownText.size())
-        .multiplyScalar(0.5));
 
-    // Position at the center
-    selectText.position(selectText.position().addSelf(windSize).subSelf(selectText.size()).multiplyScalar(0.5));
+    function center(element) {
+        element.position(element.position()
+            .addSelf(windSize)
+            .subSelf(element.size())
+            .multiplyScalar(0.5));
+    }
 
-    radial2.position(radial2.position()
-        .addSelf(windSize)
-        .subSelf(radial2.size())
-        .multiplyScalar(0.5));
+    center(countdownText);
+    center(selectText);
+
 
     wind.add(radial2)
         .add(radial)
@@ -170,7 +173,6 @@ function showTimer(timer) {
 
     function start() {
         function tick() {
-            // wind.remove(countdownText);
             if (timerStart <= 0) {
                 wind.remove(countdownText).add(doneText);
                 stop();
@@ -183,7 +185,6 @@ function showTimer(timer) {
                 var percent = timerStart / timerTotal * 100;
 
                 radial.angle2(radialStart * percent / 100);
-                //  console.log(countdownText.state.text);
             }
 
         }
