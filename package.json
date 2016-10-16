@@ -11,6 +11,30 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/pause.png",
+                    "name": "pause_button",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/stop.png",
+                    "name": "stop_button",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/reset.png",
+                    "name": "reset_button",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/play.png",
+                    "name": "play_button",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/tile_splash.png",
                     "name": "IMAGE_TILE_SPLASH",
                     "type": "bitmap"
