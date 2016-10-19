@@ -167,7 +167,7 @@ function showTimer(timer) {
             selectText.text("Reset");
         }
 
-        clearInterval(timer.interval);
+      //  clearInterval(timer.interval);
         timer.running = false;
     }
 
@@ -192,7 +192,7 @@ function showTimer(timer) {
         timer.running = true;
         selectText.text("Stop");
         timer.interval = setInterval(tick, 1000 / tickFactor);
-        // tick();
+        tick();
     }
 
     function reset() {
