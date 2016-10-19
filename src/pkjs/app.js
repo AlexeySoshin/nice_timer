@@ -39,6 +39,7 @@ function showMenu() {
             items: [{
                 title: '10 seconds',
                 subtitle: '00:10'
+                //TODO icons
             }, {
                 title: '30 seconds',
                 subtitle: '00:30'
@@ -56,11 +57,23 @@ function showMenu() {
         if (selected) {
             selected.item.icon = '';
         }
-        e.item.icon = 'images/menu_icon.png';
+        //    e.item.icon = 'images/menu_icon.png';
         selected = e;
         showTimer(timers[e.itemIndex]);
     });
     menu.show();
+}
+
+function getBackgroundRadial() {
+    return new UI.Radial({
+        size:            new Vector2(width, width),
+        angle:           0,
+        angle2:          360,
+        radius:          radialRadius / 2,
+        backgroundColor: '#AAAAAA',
+        borderColor:     'black',
+        borderWidth:     0
+    });
 }
 
 function showTimer(timer) {
@@ -82,7 +95,7 @@ function showTimer(timer) {
     });
 
 
-    var width = 140;
+    var width = 100;
     var radial = new UI.Radial({
         size: new Vector2(width, width),
         angle: 0,
@@ -93,23 +106,8 @@ function showTimer(timer) {
         borderWidth: 0
     });
 
-    var radial2 = new UI.Radial({
-        size: new Vector2(width, width),
-        angle: 0,
-        angle2: radialStart,
-        radius: radialRadius / 2,
-        backgroundColor: '#AAAAAA',
-        borderColor: 'black',
-        borderWidth: 0
-    });
 
     var countdownText = new UI.Text({
-        size: new Vector2(width, 60),
-        font: 'bitham-42-bold',
-        text: secondsToRun,
-        textAlign: 'center'
-    });
-    var doneText = new UI.Text({
         size: new Vector2(width, 60),
         font: 'bitham-42-bold',
         text: secondsToRun,
@@ -149,7 +147,7 @@ function showTimer(timer) {
     center(selectText);
 
 
-    wind.add(radial2)
+    wind.add(getBackgroundRadial())
         .add(radial)
         .add(selectText)
         .add(countdownText)
@@ -174,7 +172,6 @@ function showTimer(timer) {
     function start() {
         function tick() {
             if (timerStart <= 0) {
-                wind.remove(countdownText).add(doneText);
                 stop();
                 vibe.vibrate("short");
             }
@@ -192,7 +189,7 @@ function showTimer(timer) {
         timer.running = true;
         selectText.text("Stop");
         timer.interval = setInterval(tick, 1000 / tickFactor);
-        // tick();
+        tick();
     }
 
     function reset() {
@@ -201,7 +198,6 @@ function showTimer(timer) {
         radial.angle2(radialStart);
         countdownText.text(secondsToRun);
         selectText.text("Start");
-        wind.remove(doneText).add(countdownText);
     }
 
     function startStop() {
