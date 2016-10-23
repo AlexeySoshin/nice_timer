@@ -13,20 +13,30 @@ var vibe = require('ui/vibe');
 var radialColor = "orange";
 var radialRadius = 10;
 
+var STOPPED = "stopped";
+var STARTED = "started";
+var PAUSED = "paused";
+
+var PAUSE_IMAGE = "images/pause.png";
+var PLAY_IMAGE = "images/play.png";
+var RESET_IMAGE = "images/reset.png";
+
+var MAIN_BACKGROUND_COLOR = 'black';
+
 var timers = [
     {
-        running: false,
-        seconds: 10,
+        status:   STOPPED,
+        seconds:  10,
         interval: null
     },
     {
-        running: false,
-        seconds: 30,
+        status:   STOPPED,
+        seconds:  30,
         interval: null
     },
     {
-        running: false,
-        seconds: 60,
+        status:   STOPPED,
+        seconds:  60,
         interval: null
     }];
 
@@ -34,7 +44,9 @@ showMenu();
 
 function showMenu() {
 
+    //TODO generate based on @timers
     var menu = new UI.Menu({
+
         sections: [{
             items: [{
                 title: '10 seconds',
@@ -51,9 +63,6 @@ function showMenu() {
     });
     var selected = null;
     menu.on('select', function (e) {
-        console.log('Selected item #' + e.itemIndex + ' of section #' + e.sectionIndex);
-        console.log('The item is titled "' + e.item.title + '"');
-
         if (selected) {
             selected.item.icon = '';
         }
@@ -64,14 +73,35 @@ function showMenu() {
     menu.show();
 }
 
-function getBackgroundRadial() {
+function getBackgroundRadial(width) {
     return new UI.Radial({
         size:            new Vector2(width, width),
         angle:           0,
         angle2:          360,
         radius:          radialRadius / 2,
         backgroundColor: '#AAAAAA',
-        borderColor:     'black',
+        borderColor:     MAIN_BACKGROUND_COLOR,
+        borderWidth:     0
+    });
+}
+
+function getCountdownText(width, secondsToRun) {
+    return new UI.Text({
+        size:      new Vector2(width, 60),
+        font:      'bitham-42-bold',
+        text:      secondsToRun,
+        textAlign: 'center'
+    });
+}
+
+function getRadial(width, radialStart) {
+    return new UI.Radial({
+        size:            new Vector2(width, width),
+        angle:           0,
+        angle2:          radialStart,
+        radius:          radialRadius,
+        backgroundColor: radialColor,
+        borderColor:     MAIN_BACKGROUND_COLOR,
         borderWidth:     0
     });
 }
@@ -86,55 +116,29 @@ function showTimer(timer) {
     var radialStart = 360;
 
     var wind = new UI.Window({
-        backgroundColor: 'black'
+        backgroundColor: MAIN_BACKGROUND_COLOR
     });
+
     wind.status({
-        color: 'white',
-        backgroundColor: 'black',
-        separator: "none"
+        color:           'white',
+        backgroundColor: MAIN_BACKGROUND_COLOR,
+        separator:       "none"
     });
 
-
-    var width = 100;
-    var radial = new UI.Radial({
-        size: new Vector2(width, width),
-        angle: 0,
-        angle2: radialStart,
-        radius: radialRadius,
-        backgroundColor: radialColor,
-        borderColor: 'black',
-        borderWidth: 0
+    wind.action({
+        select:          PLAY_IMAGE,
+        backgroundColor: "clear"
     });
 
-
-    var countdownText = new UI.Text({
-        size: new Vector2(width, 60),
-        font: 'bitham-42-bold',
-        text: secondsToRun,
-        textAlign: 'center'
-    });
-
-    var selectText = new UI.Text(
-        {
-            size: new Vector2(width, 40),
-            font: 'gothic-24-bold',
-            text: "Start",
-            textAlign: 'right'
-        }
-    );
-
-    var upText = new UI.Text(
-        {
-            size: new Vector2(width, 40),
-            font: 'gothic-24-bold',
-            text: "Reset",
-            textAlign: 'right'
-        }
-    );
     var windSize = Feature.resolution();
 
-    // Center the radial in the window
+    var width = 144 - 30;
+    var radial = getRadial(width, radialStart);
 
+    var countdownText = getCountdownText(width, secondsToRun);
+
+
+    // Center the radial in the window
 
     function center(element) {
         element.position(element.position()
@@ -143,30 +147,24 @@ function showTimer(timer) {
             .multiplyScalar(0.5));
     }
 
-    center(countdownText);
-    center(selectText);
 
-
-    wind.add(getBackgroundRadial())
+    wind.add(getBackgroundRadial(width))
         .add(radial)
-        .add(selectText)
         .add(countdownText)
-        .add(upText)
         .show();
 
 
     wind.on('click', 'select', startStop);
+    wind.on('click', 'up', reset);
 
     function stop() {
-        if (timerStart > 0) {
-            selectText.text("Cont.");
+        clearInterval(timer.interval);
+        if (timer.status === STARTED) {
+            timer.status = PAUSED;
         }
         else {
-            selectText.text("Reset");
+            timer.status = STOPPED;
         }
-
-        clearInterval(timer.interval);
-        timer.running = false;
     }
 
     function start() {
@@ -186,31 +184,47 @@ function showTimer(timer) {
 
         }
 
-        timer.running = true;
-        selectText.text("Stop");
+        timer.status = STARTED;
         timer.interval = setInterval(tick, 1000 / tickFactor);
         tick();
     }
 
     function reset() {
-        timerStart = secondsToRun * tickFactor;
-        timerTotal = timerStart;
-        radial.angle2(radialStart);
-        countdownText.text(secondsToRun);
-        selectText.text("Start");
+        if (timer.status === PAUSED) {
+            timerStart = secondsToRun * tickFactor;
+            timerTotal = timerStart;
+            radial.angle2(radialStart);
+            countdownText.text(secondsToRun);
+            wind.action({
+                up:     "",
+                select: PLAY_IMAGE
+            });
+        }
+        else {
+            console.log("reset()", "Invalid timer status", timer.status);
+        }
+
     }
 
     function startStop() {
-        if (!timer.running) {
-            if (timerStart <= 0) {
-                reset();
-            }
-            else {
+
+        switch (timer.status) {
+            case STOPPED:
+            case PAUSED:
                 start();
-            }
-        }
-        else {
-            stop();
+                wind.action({
+                    select: PAUSE_IMAGE
+                });
+                break;
+            case STARTED:
+                stop();
+                wind.action({
+                    up:     RESET_IMAGE,
+                    select: PLAY_IMAGE
+                });
+                break;
+            default:
+                console.log("Wrong timer status ", timer.status);
         }
     }
 }
