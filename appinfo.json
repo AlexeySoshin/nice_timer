@@ -1,7 +1,7 @@
 {
     "appKeys": {},
     "capabilities": [
-        ""
+        "configurable"
     ],
     "companyName": "alexey.soshin@gmail.com",
     "longName": "Nice Timer",
@@ -29,6 +29,21 @@
                 "type": "font"
             },
             {
+                "file": "images/reset.png",
+                "name": "IMAGES_RESET_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/pause.png",
+                "name": "IMAGES_PAUSE_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/play.png",
+                "name": "IMAGES_PLAY_PNG",
+                "type": "bitmap"
+            },
+            {
                 "file": "images/menu_icon",
                 "menuIcon": true,
                 "name": "IMAGES_MENU_ICON",
@@ -39,7 +54,7 @@
     "sdkVersion": "3",
     "shortName": "Nice Timer",
     "targetPlatforms": [
-        "basalt"
+        "aplite"
     ],
     "uuid": "57b0549c-0974-4751-83b4-bdc121b9ca1e",
     "versionCode": 1,
