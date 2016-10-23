@@ -6,7 +6,6 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
-var Feature = require('platform/feature');
 var vibe = require('ui/vibe');
 
 
@@ -22,6 +21,10 @@ var PLAY_IMAGE = "images/play.png";
 var RESET_IMAGE = "images/reset.png";
 
 var MAIN_BACKGROUND_COLOR = 'black';
+
+var SHORT_VIBRATION = "short";
+
+var SELECT_BUTTON = 'select';
 
 var timers = [
     {
@@ -42,27 +45,32 @@ var timers = [
 
 showMenu();
 
+function getTimersMenuItems() {
+    //TODO generate based on @timers
+    return [{
+        title:    '10 seconds',
+        subtitle: '00:10'
+        //TODO icons
+    }, {
+        title:    '30 seconds',
+        subtitle: '00:30'
+    }, {
+        title:    '1 minute',
+        subtitle: '01:00'
+    }];
+}
+
 function showMenu() {
 
-    //TODO generate based on @timers
+
     var menu = new UI.Menu({
 
         sections: [{
-            items: [{
-                title: '10 seconds',
-                subtitle: '00:10'
-                //TODO icons
-            }, {
-                title: '30 seconds',
-                subtitle: '00:30'
-            }, {
-                title: '1 minute',
-                subtitle: '01:00'
-            }]
+            items: getTimersMenuItems()
         }]
     });
     var selected = null;
-    menu.on('select', function (e) {
+    menu.on(SELECT_BUTTON, function (e) {
         if (selected) {
             selected.item.icon = '';
         }
@@ -74,7 +82,7 @@ function showMenu() {
 }
 
 function getBackgroundRadial(width) {
-    return new UI.Radial({
+    var radial = new UI.Radial({
         size:            new Vector2(width, width),
         angle:           0,
         angle2:          360,
@@ -83,19 +91,28 @@ function getBackgroundRadial(width) {
         borderColor:     MAIN_BACKGROUND_COLOR,
         borderWidth:     0
     });
+
+    padTop(radial, 25);
+
+    return radial;
 }
 
 function getCountdownText(width, secondsToRun) {
-    return new UI.Text({
+    var text = new UI.Text({
         size:      new Vector2(width, 60),
         font:      'bitham-42-bold',
         text:      secondsToRun,
         textAlign: 'center'
     });
+
+
+    padTop(text, 80);
+
+    return text;
 }
 
 function getRadial(width, radialStart) {
-    return new UI.Radial({
+    var radial = new UI.Radial({
         size:            new Vector2(width, width),
         angle:           0,
         angle2:          radialStart,
@@ -104,17 +121,33 @@ function getRadial(width, radialStart) {
         borderColor:     MAIN_BACKGROUND_COLOR,
         borderWidth:     0
     });
+
+    padTop(radial, 25);
+
+    return radial;
+
 }
 
-function showTimer(timer) {
+function padTop(element, padding) {
+    element.position(element.position()
+        .addSelf(new Vector2(0, padding))
+        .multiplyScalar(0.5));
+}
 
-    var secondsToRun = timer.seconds;
+/**
+ *
+ * @param times - number of times to vibrate
+ */
+function vibrate(times) {
 
-    var tickFactor = 2;
-    var timerStart = secondsToRun * tickFactor;
-    var timerTotal = timerStart;
-    var radialStart = 360;
+    for (var i = 0; i < times; i++) {
+        setTimeout(function () {
+            vibe.vibrate(SHORT_VIBRATION);
+        }, i * 1000);
+    }
+}
 
+function getTimerWindow() {
     var wind = new UI.Window({
         backgroundColor: MAIN_BACKGROUND_COLOR
     });
@@ -130,22 +163,29 @@ function showTimer(timer) {
         backgroundColor: "clear"
     });
 
-    var windSize = Feature.resolution();
+    return wind;
+}
 
-    var width = 144 - 30;
+function getAvailableWidth() {
+    var MENU_WIDTH = 30;
+    return 144 - MENU_WIDTH;
+}
+
+function showTimer(timer) {
+
+    var secondsToRun = timer.seconds;
+
+    var tickFactor = 2;
+    var timerStart = secondsToRun * tickFactor;
+    var timerTotal = timerStart;
+    var radialStart = 360;
+
+    var wind = getTimerWindow();
+
+    var width = getAvailableWidth();
     var radial = getRadial(width, radialStart);
 
     var countdownText = getCountdownText(width, secondsToRun);
-
-
-    // Center the radial in the window
-
-    function center(element) {
-        element.position(element.position()
-            .addSelf(windSize)
-            .subSelf(element.size())
-            .multiplyScalar(0.5));
-    }
 
 
     wind.add(getBackgroundRadial(width))
@@ -154,12 +194,12 @@ function showTimer(timer) {
         .show();
 
 
-    wind.on('click', 'select', startStop);
+    wind.on('click', SELECT_BUTTON, startStop);
     wind.on('click', 'up', reset);
 
     function stop() {
         clearInterval(timer.interval);
-        if (timer.status === STARTED) {
+        if (timer.status === STARTED && timerStart > 0) {
             timer.status = PAUSED;
         }
         else {
@@ -171,7 +211,7 @@ function showTimer(timer) {
         function tick() {
             if (timerStart <= 0) {
                 stop();
-                vibe.vibrate("short");
+                vibrate(3);
             }
             else {
                 --timerStart;
