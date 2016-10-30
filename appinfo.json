@@ -34,13 +34,13 @@
                 "type": "bitmap"
             },
             {
-                "file": "images/pause.png",
-                "name": "IMAGES_PAUSE_PNG",
+                "file": "images/play.png",
+                "name": "IMAGES_PLAY_PNG",
                 "type": "bitmap"
             },
             {
-                "file": "images/play.png",
-                "name": "IMAGES_PLAY_PNG",
+                "file": "images/pause.png",
+                "name": "IMAGES_PAUSE_PNG",
                 "type": "bitmap"
             },
             {
@@ -54,11 +54,13 @@
     "sdkVersion": "3",
     "shortName": "Nice Timer",
     "targetPlatforms": [
-        "aplite"
+        "aplite",
+        "basalt",
+        "chalk"
     ],
     "uuid": "57b0549c-0974-4751-83b4-bdc121b9ca1e",
     "versionCode": 1,
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false

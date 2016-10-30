@@ -253,6 +253,7 @@ function showTimer(timer) {
             case PAUSED:
                 start();
                 wind.action({
+                  up:"",
                     select: PAUSE_IMAGE
                 });
                 break;
