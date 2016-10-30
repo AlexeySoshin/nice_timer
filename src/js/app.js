@@ -160,7 +160,7 @@ function getTimerWindow() {
 
   wind.action({
     select:          PLAY_IMAGE,
-    backgroundColor: "clear"
+    backgroundColor: "black"
   });
 
   return wind;
