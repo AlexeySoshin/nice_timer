@@ -196,6 +196,19 @@ function showTimer(timer) {
 
   wind.on('click', SELECT_BUTTON, startStop);
   wind.on('click', 'up', reset);
+  wind.on('click', 'back', backToMenu);
+
+  function backToMenu() {
+    clearInterval(timer.interval);
+
+    timer.status = STOPPED;
+
+    // First time the window hides
+    wind.hide();
+
+    // Second time destroyed
+    wind.hide();
+  }
 
   function stop() {
     clearInterval(timer.interval);
@@ -253,6 +266,7 @@ function showTimer(timer) {
       case PAUSED:
         start();
         wind.action({
+          up:     "",
           select: PAUSE_IMAGE
         });
         break;
