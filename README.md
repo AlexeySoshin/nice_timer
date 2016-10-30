@@ -19,3 +19,9 @@ After you installed PebbleJS SDK do:
 pebble build && pebble install --phone <IP>
 ```
 
+To display logs
+
+
+```
+pebble build && pebble install --phone <IP> && pebble install --phone <IP>
+```

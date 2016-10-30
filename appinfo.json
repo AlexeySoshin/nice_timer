@@ -1,0 +1,56 @@
+{
+  "appKeys": {},
+  "capabilities": [
+    "configurable"
+  ],
+  "companyName": "Alexey Soshin",
+  "longName": "Nice Timer",
+  "resources": {
+    "media": [
+      {
+        "file": "images/menu_icon.png",
+        "menuIcon": true,
+        "name": "IMAGE_MENU_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/tile_splash.png",
+        "name": "IMAGE_TILE_SPLASH",
+        "type": "bitmap"
+      },
+      {
+        "file": "fonts/UbuntuMono-Regular.ttf",
+        "name": "MONO_FONT_14",
+        "type": "font"
+      },
+      {
+        "file": "images/reset.png",
+        "name": "IMAGES_RESET_PNG",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/pause.png",
+        "name": "IMAGES_PAUSE_PNG",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/play.png",
+        "name": "IMAGES_PLAY_PNG",
+        "type": "bitmap"
+      }
+    ]
+  },
+  "sdkVersion": "3",
+  "shortName": "Nice Timer",
+  "targetPlatforms": [
+    "aplite",
+    "basalt",
+    "chalk"
+  ],
+  "uuid": "57b0549c-0974-4751-83b4-bdc121b9ca1e",
+  "versionCode": 12,
+  "versionLabel": "1.2",
+  "watchapp": {
+    "watchface": false
+  }
+}

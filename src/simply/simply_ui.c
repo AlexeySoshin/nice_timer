@@ -58,7 +58,8 @@ static const SimplyStyle STYLES[StyleIndexCount] = {
   },
   [StyleIndex_Mono] = {
     .title_font = FONT_KEY_GOTHIC_24_BOLD,
-    .subtitle_font = FONT_KEY_GOTHIC_18_BOLD
+    .subtitle_font = FONT_KEY_GOTHIC_18_BOLD,
+    .custom_body_font_id = RESOURCE_ID_MONO_FONT_14,
   },
   [StyleIndex_Small] = {
     .title_icon_padding = 4,
