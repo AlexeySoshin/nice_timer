@@ -4,6 +4,20 @@
  * @author Alexey Soshin
  */
 
+// Import the Clay package
+var Clay = require('clay');
+// Load our Clay configuration file
+var clayConfig = require('./config');
+// Initialize Clay
+var clay = new Clay(clayConfig);
+
+
+for (p in clayConfig) {
+  for (pp in clayConfig[p]) {
+    console.log(pp)
+  }
+}
+
 var UI = require('ui');
 var Vector2 = require('vector2');
 var vibe = require('ui/vibe');
@@ -224,6 +238,7 @@ function showTimer(timer) {
     function tick() {
       if (timerStart <= 0) {
         stop();
+        reset();
         vibrate(3);
       }
       else {
@@ -243,7 +258,7 @@ function showTimer(timer) {
   }
 
   function reset() {
-    if (timer.status === PAUSED) {
+    if (timer.status === PAUSED || timer.status === STOPPED) {
       timerStart = secondsToRun * tickFactor;
       timerTotal = timerStart;
       radial.angle2(radialStart);

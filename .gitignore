@@ -6,3 +6,7 @@ build/*
 .lock-waf_darwin_build
 
 .DS_Store
+
+waftools/aplite_legacy.pyc
+
+waftools/configure_appinfo.pyc
