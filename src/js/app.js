@@ -12,11 +12,7 @@ var clayConfig = require('./config');
 var clay = new Clay(clayConfig);
 
 
-for (p in clayConfig) {
-  for (pp in clayConfig[p]) {
-    console.log(pp)
-  }
-}
+
 
 var UI = require('ui');
 var Vector2 = require('vector2');
@@ -39,6 +35,10 @@ var MAIN_BACKGROUND_COLOR = 'black';
 var SHORT_VIBRATION = "short";
 
 var SELECT_BUTTON = 'select';
+
+var EMPTY = "";
+
+var autostart = true;
 
 var timers = [
   {
@@ -174,7 +174,7 @@ function getTimerWindow() {
 
   wind.action({
     select:          PLAY_IMAGE,
-    backgroundColor: "black"
+    backgroundColor: MAIN_BACKGROUND_COLOR
   });
 
   return wind;
@@ -212,6 +212,10 @@ function showTimer(timer) {
   wind.on('click', 'up', reset);
   wind.on('click', 'back', backToMenu);
 
+  if (autostart) {
+    start();
+  }
+
   function backToMenu() {
     clearInterval(timer.interval);
 
@@ -228,9 +232,17 @@ function showTimer(timer) {
     clearInterval(timer.interval);
     if (timer.status === STARTED && timerStart > 0) {
       timer.status = PAUSED;
+      wind.action({
+        up:     RESET_IMAGE,
+        select: PLAY_IMAGE
+      });
     }
     else {
       timer.status = STOPPED;
+      wind.action({
+        up:     EMPTY,
+        select: PLAY_IMAGE
+      });
     }
   }
 
@@ -252,6 +264,11 @@ function showTimer(timer) {
 
     }
 
+    wind.action({
+      up:     EMPTY,
+      select: PAUSE_IMAGE
+    });
+
     timer.status = STARTED;
     timer.interval = setInterval(tick, 1000 / tickFactor);
     tick();
@@ -263,10 +280,6 @@ function showTimer(timer) {
       timerTotal = timerStart;
       radial.angle2(radialStart);
       countdownText.text(secondsToRun);
-      wind.action({
-        up:     "",
-        select: PLAY_IMAGE
-      });
     }
     else {
       console.log("reset()", "Invalid timer status", timer.status);
@@ -280,17 +293,11 @@ function showTimer(timer) {
       case STOPPED:
       case PAUSED:
         start();
-        wind.action({
-          up:     "",
-          select: PAUSE_IMAGE
-        });
+
         break;
       case STARTED:
         stop();
-        wind.action({
-          up:     RESET_IMAGE,
-          select: PLAY_IMAGE
-        });
+
         break;
       default:
         console.log("Wrong timer status ", timer.status);
