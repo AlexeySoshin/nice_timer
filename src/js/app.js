@@ -40,10 +40,21 @@ var EMPTY = "";
 
 var autostart = true;
 
+var MINUTE = 60;
+
+var TIME = {
+  MINUTES:   " minutes",
+  SECONDS:   " seconds",
+  SECOND:    " second",
+  MINUTE:    " minute",
+  ZERO:      "0",
+  SEPARATOR: ":"
+};
+
 var timers = [
   {
     status:   STOPPED,
-    seconds:  10,
+    seconds:  15,
     interval: null
   },
   {
@@ -59,19 +70,60 @@ var timers = [
 
 showMenu();
 
+// Convert minutes and seconds to "x minutes y seconds"
+function timeToWords(m, s) {
+
+  var result = [];
+
+  if (m > 0) {
+    result.push(m);
+
+    if (s == 1) {
+      result.push(TIME.SECOND);
+    }
+    else {
+      result.push(TIME.SECONDS);
+    }
+  }
+
+  if (s > 0) {
+    result.push(s);
+
+    if (s == 1) {
+      result.push(TIME.MINUTE);
+    }
+    else {
+      result.push(TIME.MINUTES);
+    }
+  }
+
+  return result.join(EMPTY);
+}
+
 function getTimersMenuItems() {
-  //TODO generate based on @timers
-  return [{
-    title:    '10 seconds',
-    subtitle: '00:10'
-    //TODO icons
-  }, {
-    title:    '30 seconds',
-    subtitle: '00:30'
-  }, {
-    title:    '1 minute',
-    subtitle: '01:00'
-  }];
+
+  // Convert minutes and seconds to "minute:second" with leading zeroes
+  function timeToString(m, s) {
+
+    function padTime(x) {
+      return x < 10 ? [TIME.ZERO, x].join(EMPTY) : x
+    }
+
+    return [padTime(m), padTime(s)].join(TIME.SEPARATOR);
+  }
+
+  var result = [];
+  for (var i = 0; i < timers.length; i++) {
+    var timer = timers[i];
+
+    var seconds = timer.seconds % MINUTE;
+    var minutes = timer.seconds / MINUTE;
+
+    result.push({
+      title:    timeToWords(minutes, seconds),
+      subtitle: timeToString(minutes, seconds)
+    })
+  }
 }
 
 function showMenu() {
