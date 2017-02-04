@@ -30,8 +30,9 @@ To display logs
 pebble build && pebble install --phone <IP> && pebble install --phone <IP>
 ```
 
-## Screenshots
-Coming soon...
+## Screenshots and downloads
+https://apps.getpebble.com/en_US/application/5814927a204470de17000154
+http://bestwatchapps.net/app/pebble/nice-timer/
 
 ## License 
 MIT
