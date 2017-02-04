@@ -82,11 +82,11 @@ function timeToWords(m, s) {
   if (m > 0) {
     result.push(m);
 
-    if (s == 1) {
-      result.push(TIME.SECOND);
+    if (m == 1) {
+      result.push(TIME.MINUTE);
     }
     else {
-      result.push(TIME.SECONDS);
+      result.push(TIME.MINUTES);
     }
   }
 
@@ -94,10 +94,10 @@ function timeToWords(m, s) {
     result.push(s);
 
     if (s == 1) {
-      result.push(TIME.MINUTE);
+      result.push(TIME.SECOND);
     }
     else {
-      result.push(TIME.MINUTES);
+      result.push(TIME.SECONDS);
     }
   }
 
@@ -120,14 +120,16 @@ function getTimersMenuItems() {
   for (var i = 0; i < timers.length; i++) {
     var timer = timers[i];
 
-    var seconds = timer.seconds % MINUTE;
-    var minutes = timer.seconds / MINUTE;
+    var seconds = Math.floor(timer.seconds % MINUTE);
+    var minutes = Math.floor(timer.seconds / MINUTE);
 
     result.push({
       title:    timeToWords(minutes, seconds),
       subtitle: timeToString(minutes, seconds)
     })
   }
+
+  return result;
 }
 
 function showMenu() {
@@ -229,7 +231,6 @@ function getTimerWindow() {
   });
 
   wind.action({
-    select:          PLAY_IMAGE,
     backgroundColor: MAIN_BACKGROUND_COLOR
   });
 
