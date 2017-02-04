@@ -323,7 +323,6 @@ function showTimer(timer) {
     function tick() {
       if (timerStart <= 0) {
         stop();
-        reset();
         vibrate(3);
       }
       else {
@@ -345,17 +344,11 @@ function showTimer(timer) {
   }
 
   function reset() {
-    if (timer.status === PAUSED || timer.status === STOPPED) {
-      timerStart = secondsToRun * tickFactor;
-      timerTotal = timerStart;
-      radial.angle2(radialStart);
-      countdownText.text(secondsToRun);
-      stoppedState();
-    }
-    else {
-      console.log("reset()", "Invalid timer status", timer.status);
-    }
-
+    stoppedState();
+    timerStart = secondsToRun * tickFactor;
+    timerTotal = timerStart;
+    radial.angle2(radialStart);
+    countdownText.text(secondsToRun);
   }
 
   function startStop() {
