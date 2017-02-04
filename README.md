@@ -27,7 +27,7 @@ To display logs
 
 
 ```
-pebble build && pebble install --phone <IP> && pebble install --phone <IP>
+pebble build && pebble install --phone <IP> && pebble logs --phone <IP>
 ```
 
 ## Screenshots and downloads
