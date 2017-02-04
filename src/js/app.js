@@ -34,7 +34,11 @@ var MAIN_BACKGROUND_COLOR = 'black';
 
 var SHORT_VIBRATION = "short";
 
-var SELECT_BUTTON = 'select';
+var BUTTONS = {
+  SELECT: 'select',
+  BACK:   'back',
+  UP:     'up'
+};
 
 var EMPTY = "";
 
@@ -136,9 +140,9 @@ function showMenu() {
     }]
   });
   var selected = null;
-  menu.on(SELECT_BUTTON, function (e) {
+  menu.on(BUTTONS.SELECT, function (e) {
     if (selected) {
-      selected.item.icon = '';
+      selected.item.icon = EMPTY;
     }
     //    e.item.icon = 'images/menu_icon.png';
     selected = e;
@@ -260,9 +264,9 @@ function showTimer(timer) {
       .show();
 
 
-  wind.on('click', SELECT_BUTTON, startStop);
-  wind.on('click', 'up', reset);
-  wind.on('click', 'back', backToMenu);
+  wind.on('click', BUTTONS.SELECT, startStop);
+  wind.on('click', BUTTONS.UP, reset);
+  wind.on('click', BUTTONS.BACK, backToMenu);
 
   if (autostart) {
     start();
@@ -283,19 +287,35 @@ function showTimer(timer) {
   function stop() {
     clearInterval(timer.interval);
     if (timer.status === STARTED && timerStart > 0) {
-      timer.status = PAUSED;
-      wind.action({
-        up:     RESET_IMAGE,
-        select: PLAY_IMAGE
-      });
+      pausedState();
     }
     else {
-      timer.status = STOPPED;
-      wind.action({
-        up:     EMPTY,
-        select: PLAY_IMAGE
-      });
+      reset();
     }
+  }
+
+  function pausedState() {
+    timer.status = PAUSED;
+    wind.action({
+      up:     RESET_IMAGE,
+      select: PLAY_IMAGE
+    });
+  }
+
+  function stoppedState() {
+    timer.status = STOPPED;
+    wind.action({
+      up:     EMPTY,
+      select: PLAY_IMAGE
+    });
+  }
+
+  function startedState() {
+    timer.status = STARTED;
+    wind.action({
+      up:     EMPTY,
+      select: PAUSE_IMAGE
+    });
   }
 
   function start() {
@@ -316,12 +336,9 @@ function showTimer(timer) {
 
     }
 
-    wind.action({
-      up:     EMPTY,
-      select: PAUSE_IMAGE
-    });
+    startedState();
 
-    timer.status = STARTED;
+
     timer.interval = setInterval(tick, 1000 / tickFactor);
     tick();
   }
@@ -332,6 +349,7 @@ function showTimer(timer) {
       timerTotal = timerStart;
       radial.angle2(radialStart);
       countdownText.text(secondsToRun);
+      stoppedState();
     }
     else {
       console.log("reset()", "Invalid timer status", timer.status);
