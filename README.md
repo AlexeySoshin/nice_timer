@@ -31,8 +31,7 @@ pebble build && pebble install --phone <IP> && pebble logs --phone <IP>
 ```
 
 ## Screenshots and downloads
-https://apps.getpebble.com/en_US/application/5814927a204470de17000154
-http://bestwatchapps.net/app/pebble/nice-timer/
+https://apps.rebble.io/en_US/application/5814927a204470de17000154?query=nice%2520timer&section=watchapps
 
 ## License 
 MIT
